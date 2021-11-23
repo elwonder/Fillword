@@ -35,7 +35,7 @@ public class Main {
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
 
-            System.out.println("Сможла за: "  + timeElapsed.toSeconds() + " с.");
+            System.out.println("Сможла за: "  + timeElapsed.toMillis() + "мс.");
 
             result.print();
 
