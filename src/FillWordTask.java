@@ -1,7 +1,6 @@
 package src;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
@@ -20,11 +19,8 @@ public class FillWordTask implements Callable<FillWord> {
     @Override
     public FillWord call() throws Exception {
         FillWord result = null;
-        Arrays.sort(words, Comparator.comparing(String::length).reversed());
         do {
-            for (int i = 0; i < 1000; i++) {
-                result = FillWordGenerator.generate(size, words);
-            }
+            result = FillWordGenerator.generate(size, words);
             shuffle(words);
         } while (result == null);
         return result;

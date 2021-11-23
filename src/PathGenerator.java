@@ -1,7 +1,5 @@
 package src;
 
-import java.awt.*;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class PathGenerator {
@@ -9,14 +7,14 @@ public class PathGenerator {
     private static final Random gen = new Random();
     private static final char NULL = '\u0000';
 
-    private final int range;
     private final Pair[] path;
     private final char[][] fillWord;
+    private final Direction[] directions;
 
     public PathGenerator(String word, char[][] fillWord) {
         this.path = new Pair[word.length()];
         this.fillWord = fillWord;
-        this.range = fillWord.length;
+        this.directions = Direction.values();
     }
 
     public Pair[] generate(Pair initialPoint) {
@@ -32,16 +30,11 @@ public class PathGenerator {
 
     public Pair step(Pair p) {
         Pair result;
-
-        var directions = Direction.values();
-
         shuffle(directions);
-
         for (Direction dir : directions) {
             result = makeStep(p, dir);
-            if (result != null) return result;
+            if (result != null && notInPath(result)) return result;
         }
-
         return null;
     }
 
@@ -55,30 +48,25 @@ public class PathGenerator {
     }
 
     private Pair makeStep(Pair p, Direction direction) {
-        Pair result;
         switch (direction) {
             case UP:
                 if (p.x != fillWord.length - 1 && fillWord[p.x+1][p.y] == NULL) {
-                    result = new Pair(p.x + 1, p.y);
-                    if (notInPath(result)) return result;
+                    return new Pair(p.x + 1, p.y);
                 }
                 break;
             case DOWN:
                 if (p.y != fillWord.length - 1 && fillWord[p.x][p.y+1] == NULL) {
-                    result = new Pair(p.x, p.y + 1);
-                    if (notInPath(result)) return result;
+                    return new Pair(p.x, p.y + 1);
                 }
                 break;
             case LEFT:
                 if (p.x != 0  && fillWord[p.x-1][p.y] == NULL) {
-                    result = new Pair(p.x - 1, p.y);
-                    if (notInPath(result)) return result;
+                    return new Pair(p.x - 1, p.y);
                 }
                 break;
             case RIGHT:
                 if (p.y != 0 && fillWord[p.x][p.y-1] == NULL) {
-                    result =  new Pair(p.x, p.y - 1);
-                    if (notInPath(result)) return result;
+                    return new Pair(p.x, p.y - 1);
                 }
                 break;
             default:
