@@ -51,7 +51,11 @@ public class Main {
     }
 
     private static void checkDigits(int digits) {
-        for (int i = 2; i < 15; i++) {
+        if (digits > 225) {
+            System.out.println("Многовато, боюсь обосраться");
+            System.exit(0);
+        }
+        for (int i = 2; i <= 15; i++) {
             if (digits == i * i) {
                 System.out.println("Количество букв: " + digits  + ", можно попробовать замутить филворд...");
                 break;

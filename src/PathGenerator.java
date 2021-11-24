@@ -1,44 +1,45 @@
 package src;
 
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class PathGenerator {
 
-    private static final Random gen = new Random();
     private static final char NULL = '\u0000';
 
-    private final Pair[] path;
-    private final char[][] fillWord;
-    private final Direction[] directions;
+    private static final Direction[] directions = Direction.values();
 
-    public PathGenerator(String word, char[][] fillWord) {
-        this.path = new Pair[word.length()];
-        this.fillWord = fillWord;
-        this.directions = Direction.values();
-    }
+    private PathGenerator() {}
 
-    public Pair[] generate(Pair initialPoint) {
-        path[0] = initialPoint;
-        var point = initialPoint;
-        for (int i = 1; i < path.length; i++) {
-            point = step(point);
+    public static Pair[] generate(String word, char[][] fillWord, ThreadLocalRandom gen, int difficulty) {
+        int size = fillWord.length;
+        var point = new Pair(gen.nextInt(size), gen.nextInt(size));
+        while (fillWord[point.x][point.y] != NULL) {
+            point.x = gen.nextInt(size);
+            point.y = gen.nextInt(size);
+        }
+        var wordLength = word.length();
+        var path = new Pair[wordLength];
+        path[0] = point;
+        int[] indices =  {0, 1, 2, 3};
+        for (int i = 1; i < wordLength; i++) {
+            point = step(point, path, fillWord, indices);
             if (point == null) return null;
+            if (gen.nextInt(100) < difficulty) shuffle(indices, gen);
             path[i] = point;
         }
         return path;
     }
 
-    public Pair step(Pair p) {
-        Pair result;
-        shuffle(directions);
-        for (Direction dir : directions) {
-            result = makeStep(p, dir);
-            if (result != null && notInPath(result)) return result;
+    public static Pair step(Pair p, Pair[] path, char[][] fillWord, int[] indices) {
+        Pair point;
+        for (int i = 0; i < 4; i++) {
+            point = makeStep(p, directions[indices[i]], fillWord);
+            if (point != null && notInPath(point, path)) return point;
         }
         return null;
     }
 
-    private static void shuffle(Direction[] string) {
+    private static void shuffle(int[] string, ThreadLocalRandom gen) {
         for (int i = 0; i < string.length; i++) {
             int toSwap = gen.nextInt(string.length);
             var tmp = string[toSwap];
@@ -47,7 +48,7 @@ public class PathGenerator {
         }
     }
 
-    private Pair makeStep(Pair p, Direction direction) {
+    private static Pair makeStep(Pair p, Direction direction, char[][] fillWord) {
         switch (direction) {
             case UP:
                 if (p.x != fillWord.length - 1 && fillWord[p.x+1][p.y] == NULL) {
@@ -75,7 +76,7 @@ public class PathGenerator {
         return null;
     }
 
-    private boolean notInPath(Pair p) {
+    private static boolean notInPath(Pair p, Pair[] path) {
         for (Pair p1 : path) {
             if (p1 != null && p1.x == p.x && p1.y == p.y) return false;
         }

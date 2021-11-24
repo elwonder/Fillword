@@ -1,25 +1,22 @@
 package src;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class FillWordGenerator {
 
     private static final char NULL = '\u0000';
-    private static final Random gen = new Random();
 
     private FillWordGenerator() {}
 
-    public static FillWord generate(int size, String[] words) {
+    public static FillWord generate(int size, String[] words, ThreadLocalRandom gen, int difficulty) {
         var result = new char[size][size];
         for (String word : words) {
-            var pathGenerator = new PathGenerator(word, result);
             var freePoints = getFreePoints(result, size);
             while (true) {
                 var index = gen.nextInt(freePoints.size());
-                var initialPoint = freePoints.get(index);
                 freePoints.remove(index);
-                Pair[] path = pathGenerator.generate(initialPoint);
+                Pair[] path = PathGenerator.generate(word, result, gen, difficulty);
                 if (path != null) {
                     placeWord(path, result, word);
                     break;
