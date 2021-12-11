@@ -12,8 +12,9 @@ import java.util.concurrent.Executors;
 public class Main {
     public static void main(String[] args) {
         int digits = 0;
-        for (String word: args) {
-            digits += word.length();
+        for (int i = 0; i < args.length; i++) {
+            args[i] = args[i].toUpperCase();
+            digits += args[i].length();
         }
         checkDigits(digits);
         int size = (int) Math.round(Math.sqrt(digits));
@@ -22,7 +23,7 @@ public class Main {
 
         List<FillWordTask> taskList = new ArrayList<>();
 
-        for (int i = 0; i < 16; i++) {
+        for (int i = 0; i < 8; i++) {
             taskList.add(new FillWordTask(size, args));
         }
 
@@ -35,7 +36,7 @@ public class Main {
             Instant end = Instant.now();
             Duration timeElapsed = Duration.between(start, end);
 
-            System.out.println("Сможла за: "  + timeElapsed.toMillis() + "мс.");
+            System.out.println("Finished in: "  + timeElapsed.toMillis() + "ms.");
 
             result.print();
 
@@ -51,18 +52,17 @@ public class Main {
     }
 
     private static void checkDigits(int digits) {
-        if (digits > 225) {
-            System.out.println("Многовато, боюсь обосраться");
-            System.exit(0);
-        }
+
         for (int i = 2; i <= 15; i++) {
-            if (digits == i * i) {
-                System.out.println("Количество букв: " + digits  + ", можно попробовать замутить филворд...");
-                break;
+            int nSquare = i * i;
+            int nPlusOneSquare = (i+1) * (i+1);
+            if (digits == nSquare) {
+                System.out.println("Amount of digits: " + digits  + ", let's try...");
+                return;
             }
-            if (digits > i * i && digits < (i + 1) * (i + 1)) {
-                System.out.println("Количество букв: " + digits + ", попробуй убавить до " + (i * i) + " или прибавить до " + ((i + 1) * (i + 1)));
-                System.exit(0);
+            if (digits > nSquare && digits < nPlusOneSquare) {
+                throw new IllegalArgumentException("Amount of digits: " + digits +
+                        ", decrease to " + nSquare + " or increase to " + nPlusOneSquare);
             }
         }
     }

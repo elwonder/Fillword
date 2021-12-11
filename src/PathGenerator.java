@@ -6,7 +6,10 @@ public class PathGenerator {
 
     private static final char NULL = '\u0000';
 
-    private static final Direction[] directions = Direction.values();
+    private static final int UP = 1;
+    private static final int DOWN = 2;
+    private static final int LEFT = 3;
+    private static final int RIGHT = 4;
 
     private PathGenerator() {}
 
@@ -33,7 +36,7 @@ public class PathGenerator {
     public static Pair step(Pair p, Pair[] path, char[][] fillWord, int[] indices) {
         Pair point;
         for (int i = 0; i < 4; i++) {
-            point = makeStep(p, directions[indices[i]], fillWord);
+            point = makeStep(p, indices[i], fillWord);
             if (point != null && notInPath(point, path)) return point;
         }
         return null;
@@ -48,7 +51,7 @@ public class PathGenerator {
         }
     }
 
-    private static Pair makeStep(Pair p, Direction direction, char[][] fillWord) {
+    private static Pair makeStep(Pair p, int direction, char[][] fillWord) {
         switch (direction) {
             case UP:
                 if (p.x != fillWord.length - 1 && fillWord[p.x+1][p.y] == NULL) {
