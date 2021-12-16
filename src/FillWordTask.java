@@ -16,17 +16,10 @@ public class FillWordTask implements Callable<FillWord> {
     }
 
     @Override
-    public FillWord call() throws Exception {
-        FillWord result = null;
-        int counter = 0;
-        int difficulty = 100;
+    public FillWord call() {
+        FillWord result;
         do {
-            result = FillWordGenerator.generate(size, words, ThreadLocalRandom.current(), difficulty);
-            counter++;
-            if (counter == 1000) {
-                difficulty -= 3;
-                counter = 0;
-            }
+            result = FillWordGenerator.generate(size, words, ThreadLocalRandom.current());
             shuffle(words, ThreadLocalRandom.current());
         } while (result == null);
         return result;

@@ -9,14 +9,14 @@ public class FillWordGenerator {
 
     private FillWordGenerator() {}
 
-    public static FillWord generate(int size, String[] words, ThreadLocalRandom gen, int difficulty) {
+    public static FillWord generate(int size, String[] words, ThreadLocalRandom gen) {
         var result = new char[size][size];
         for (String word : words) {
             var freePoints = getFreePoints(result, size);
             while (true) {
                 var index = gen.nextInt(freePoints.size());
+                Pair[] path = PathGenerator.generate(word, result, freePoints.get(index),  gen);
                 freePoints.remove(index);
-                Pair[] path = PathGenerator.generate(word, result, gen, difficulty);
                 if (path != null) {
                     placeWord(path, result, word);
                     break;

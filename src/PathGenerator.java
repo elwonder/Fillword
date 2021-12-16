@@ -13,13 +13,8 @@ public class PathGenerator {
 
     private PathGenerator() {}
 
-    public static Pair[] generate(String word, char[][] fillWord, ThreadLocalRandom gen, int difficulty) {
-        int size = fillWord.length;
-        var point = new Pair(gen.nextInt(size), gen.nextInt(size));
-        while (fillWord[point.x][point.y] != NULL) {
-            point.x = gen.nextInt(size);
-            point.y = gen.nextInt(size);
-        }
+    public static Pair[] generate(String word, char[][] fillWord, Pair start, ThreadLocalRandom gen) {
+        Pair point = start;
         var wordLength = word.length();
         var path = new Pair[wordLength];
         path[0] = point;
@@ -27,7 +22,7 @@ public class PathGenerator {
         for (int i = 1; i < wordLength; i++) {
             point = step(point, path, fillWord, indices);
             if (point == null) return null;
-            if (gen.nextInt(100) < difficulty) shuffle(indices, gen);
+            shuffle(indices, gen);
             path[i] = point;
         }
         return path;
