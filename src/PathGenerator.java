@@ -18,31 +18,31 @@ public class PathGenerator {
         var wordLength = word.length();
         var path = new Pair[wordLength];
         path[0] = point;
-        int[] indices =  {0, 1, 2, 3};
+        int[] directions =  {UP, DOWN, LEFT, RIGHT};
         for (int i = 1; i < wordLength; i++) {
-            point = step(point, path, fillWord, indices);
+            point = step(point, path, fillWord, directions);
             if (point == null) return null;
-            shuffle(indices, gen);
+            shuffle(directions, gen);
             path[i] = point;
         }
         return path;
     }
 
-    public static Pair step(Pair p, Pair[] path, char[][] fillWord, int[] indices) {
+    public static Pair step(Pair p, Pair[] path, char[][] fillWord, int[] directions) {
         Pair point;
         for (int i = 0; i < 4; i++) {
-            point = makeStep(p, indices[i], fillWord);
+            point = makeStep(p, directions[i], fillWord);
             if (point != null && notInPath(point, path)) return point;
         }
         return null;
     }
 
-    private static void shuffle(int[] string, ThreadLocalRandom gen) {
-        for (int i = 0; i < string.length; i++) {
-            int toSwap = gen.nextInt(string.length);
-            var tmp = string[toSwap];
-            string[toSwap] = string[i];
-            string[i] = tmp;
+    private static void shuffle(int[] arr, ThreadLocalRandom gen) {
+        for (int i = 0; i < arr.length; i++) {
+            int toSwap = gen.nextInt(arr.length);
+            var tmp = arr[toSwap];
+            arr[toSwap] = arr[i];
+            arr[i] = tmp;
         }
     }
 
